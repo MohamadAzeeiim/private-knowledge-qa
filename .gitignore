@@ -1,0 +1,19 @@
+# Build folders
+bin/
+obj/
+
+# Node
+node_modules/
+.next/
+
+# Environment files
+.env
+.env.local
+appsettings.Development.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
