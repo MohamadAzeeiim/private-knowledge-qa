@@ -72,7 +72,7 @@ namespace PrivateKnowledgeQa.Api.Services
 
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-            _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", "http://localhost");
+_httpClient.DefaultRequestHeaders.Add("HTTP-Referer", "https://private-knowledge-qa-1pbk.onrender.com");
             _httpClient.DefaultRequestHeaders.Add("X-Title", "PrivateKnowledgeQA");
 
             var requestBody = new
