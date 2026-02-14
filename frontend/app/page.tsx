@@ -163,50 +163,6 @@ export default function Home() {
       <div className="dashboard-grid">
         {/* Left Column: Management */}
         <div className="scroll-container">
-          <motion.section
-            variants={itemVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <h2><Upload size={18} /> Upload Knowledge</h2>
-            <div className="relative group">
-              <input
-                type="file"
-                id="file-upload"
-                className="hidden"
-                accept=".txt"
-                onChange={handleUpload}
-                disabled={uploading}
-              />
-              <label
-                htmlFor="file-upload"
-                className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all
-                  ${uploading ? 'opacity-50 cursor-not-allowed' : 'hover:border-indigo-500 hover:bg-white/5'}
-                  ${message.type === 'error' ? 'border-red-500/50' : 'border-white/10'}
-                `}
-                style={{ borderStyle: 'dashed', borderWidth: '2px' }}
-              >
-                <Upload className={`mb-2 ${uploading ? 'animate-bounce' : 'group-hover:text-indigo-400'}`} size={20} />
-                <span className="text-xs font-medium">
-                  {uploading ? 'Processing...' : 'Click to upload .txt'}
-                </span>
-              </label>
-            </div>
-
-            <AnimatePresence>
-              {message.text && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className={`flex items-center gap-2 mt-3 text-xs font-medium ${message.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}
-                >
-                  {message.type === 'success' ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                  {message.text}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.section>
 
           <motion.section
             variants={itemVariants}
