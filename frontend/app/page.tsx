@@ -196,6 +196,8 @@ export default function Home() {
                     if (file) {
                       setSelectedFileName(file.name);
                       handleUpload(e);
+                      // Clear the input value so the same file can be selected again
+                      e.target.value = "";
                     }
                   }}
                   disabled={uploading}
