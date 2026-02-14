@@ -94,8 +94,7 @@ namespace PrivateKnowledgeQa.Api.Services
 
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/chat/completions");
             request.Headers.Add("Authorization", $"Bearer {apiKey}");
-            request.Headers.Add("HTTP-Referer", "https://private-knowledge-qa-eight.vercel.app"); 
-            request.Headers.Add("X-Title", "PrivateKnowledgeQA"); 
+            
 
             request.Content = new StringContent(
                 JsonSerializer.Serialize(requestBody),
