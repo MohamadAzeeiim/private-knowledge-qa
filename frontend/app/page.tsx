@@ -40,6 +40,7 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [asking, setAsking] = useState(false);
   const [qaResult, setQaResult] = useState<QuestionResponse | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' | '' }>({ text: '', type: '' });
 
   useEffect(() => {
@@ -90,6 +91,7 @@ export default function Home() {
       setMessage({ text: "Error connecting to backend.", type: 'error' });
     } finally {
       setUploading(false);
+      setSelectedFileName("");
     }
   };
 
@@ -163,6 +165,60 @@ export default function Home() {
       <div className="dashboard-grid">
         {/* Left Column: Management */}
         <div className="scroll-container">
+          <motion.section
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <h2><Upload size={18} /> Upload Knowledge</h2>
+            <div className={`p-4 border-2 border-dashed rounded-xl transition-all ${message.type === 'error' ? 'border-red-500/30' : 'border-white/10'}`}>
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Selected File</div>
+                  <div className="text-sm truncate font-medium">
+                    {selectedFileName || <span className="text-slate-600 italic">No file chosen</span>}
+                  </div>
+                </div>
+
+                <input
+                  type="file"
+                  id="file-upload"
+                  className="hidden"
+                  accept=".txt"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setSelectedFileName(file.name);
+                      handleUpload(e);
+                    }
+                  }}
+                  disabled={uploading}
+                />
+                <label
+                  htmlFor="file-upload"
+                  className={`px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg cursor-pointer text-xs font-semibold transition-all whitespace-nowrap
+                    ${uploading ? 'opacity-50 cursor-not-allowed' : ''}
+                  `}
+                >
+                  {uploading ? 'Uploading...' : 'Choose File'}
+                </label>
+              </div>
+            </div>
+
+            <AnimatePresence>
+              {message.text && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className={`flex items-center gap-2 mt-3 text-xs font-medium ${message.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}
+                >
+                  {message.type === 'success' ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                  {message.text}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.section>
 
           <motion.section
             variants={itemVariants}
