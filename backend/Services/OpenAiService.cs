@@ -77,12 +77,11 @@ namespace PrivateKnowledgeQa.Api.Services
         {
             var apiKey = _configuration["OpenAI:ApiKey"];
             var model = _configuration["OpenAI:Model"];
-            var baseUrl = _configuration["OpenAI:BaseUrl"];
+            var baseUrl = _configuration["OpenAI:BaseUrl"]?.TrimEnd('/');
 
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-            // _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", "https://private-knowledge-qa-1pbk.onrender.com");
-            //_httpClient.DefaultRequestHeaders.Add("X-Title", "PrivateKnowledgeQA");
+            if (string.IsNullOrEmpty(apiKey)) throw new Exception("OpenRouter API Key is missing.");
+            if (string.IsNullOrEmpty(model)) throw new Exception("OpenRouter Model is missing.");
+            if (string.IsNullOrEmpty(baseUrl)) baseUrl = "https://openrouter.ai/api/v1";
 
             var requestBody = new
             {
@@ -93,20 +92,26 @@ namespace PrivateKnowledgeQa.Api.Services
                 }
             };
 
-            var content = new StringContent(
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/chat/completions");
+            request.Headers.Add("Authorization", $"Bearer {apiKey}");
+            request.Headers.Add("HTTP-Referer", "https://private-knowledge-qa-eight.vercel.app"); 
+            request.Headers.Add("X-Title", "PrivateKnowledgeQA"); 
+
+            request.Content = new StringContent(
                 JsonSerializer.Serialize(requestBody),
                 Encoding.UTF8,
                 "application/json"
             );
 
-            var response = await _httpClient.PostAsync(
-                $"{baseUrl}/chat/completions",
-                content
-            );
-
-            response.EnsureSuccessStatusCode();
-
+            var response = await _httpClient.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"OpenRouter Error Response ({response.StatusCode}): {json}");
+                response.EnsureSuccessStatusCode(); 
+            }
+
             using var doc = JsonDocument.Parse(json);
 
             return doc.RootElement
