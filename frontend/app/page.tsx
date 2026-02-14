@@ -91,7 +91,6 @@ export default function Home() {
       setMessage({ text: "Error connecting to backend.", type: 'error' });
     } finally {
       setUploading(false);
-      setSelectedFileName("");
     }
   };
 
@@ -170,20 +169,13 @@ export default function Home() {
             initial="hidden"
             animate="visible"
           >
-            <h2><Upload size={18} /> Upload Knowledge</h2>
-            <div className={`p-4 border-2 border-dashed rounded-xl transition-all ${message.type === 'error' ? 'border-red-500/30' : 'border-white/10'}`}>
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-1">Selected File</div>
-                  <div className="text-sm truncate font-medium">
-                    {selectedFileName || <span className="text-slate-600 italic">No file chosen</span>}
-                  </div>
-                </div>
-
+            <h2><Upload size={18} /> Add Knowledge</h2>
+            <div className={`p-3 bg-white/5 border border-white/10 rounded-xl transition-all ${message.type === 'error' ? 'border-red-500/30' : ''}`}>
+              <div className="flex items-center gap-3">
                 <input
                   type="file"
                   id="file-upload"
-                  className="hidden"
+                  style={{ display: 'none' }}
                   accept=".txt"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
@@ -194,14 +186,20 @@ export default function Home() {
                   }}
                   disabled={uploading}
                 />
-                <label
-                  htmlFor="file-upload"
-                  className={`px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg cursor-pointer text-xs font-semibold transition-all whitespace-nowrap
-                    ${uploading ? 'opacity-50 cursor-not-allowed' : ''}
-                  `}
+                <button
+                  onClick={() => document.getElementById('file-upload')?.click()}
+                  disabled={uploading}
+                  className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-lg transition-all whitespace-nowrap shadow-lg shadow-indigo-500/20"
                 >
                   {uploading ? 'Uploading...' : 'Choose File'}
-                </label>
+                </button>
+
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Selected Knowledge</div>
+                  <div className="text-sm truncate font-medium text-slate-200">
+                    {selectedFileName || <span className="text-slate-600 italic">No file chosen</span>}
+                  </div>
+                </div>
               </div>
             </div>
 
