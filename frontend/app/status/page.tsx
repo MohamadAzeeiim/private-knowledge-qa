@@ -12,8 +12,7 @@ import {
     Server
 } from "lucide-react";
 import Link from "next/link";
-
-const API_BASE_URL = "http://localhost:5087/api";
+import { API_URL } from "../config";
 
 interface ServiceStatus {
     backend: string;
@@ -43,7 +42,7 @@ export default function StatusPage() {
         setLoading(true);
         setError("");
         try {
-            const res = await fetch(`${API_BASE_URL}/status`);
+            const res = await fetch(`${API_URL}/status`);
             if (res.ok) {
                 const data = await res.json();
                 setStatus(data);

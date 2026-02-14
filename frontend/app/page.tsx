@@ -16,8 +16,7 @@ import {
   Activity
 } from "lucide-react";
 import Link from "next/link";
-
-const API_BASE_URL = "http://localhost:5087/api";
+import { API_URL } from "./config";
 
 interface Document {
   id: string;
@@ -62,7 +61,7 @@ export default function Home() {
 
   const fetchDocuments = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/documents`);
+      const res = await fetch(`${API_URL}/documents`);
       if (res.ok) {
         const data = await res.json();
         setDocuments(data);
@@ -88,7 +87,7 @@ export default function Home() {
     formData.append("file", file);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/documents`, {
+      const res = await fetch(`${API_URL}/documents`, {
         method: "POST",
         body: formData,
       });
@@ -109,7 +108,7 @@ export default function Home() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/documents/${id}`, {
+      const res = await fetch(`${API_URL}/documents/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -128,7 +127,7 @@ export default function Home() {
     setMessage({ text: '', type: '' });
 
     try {
-      const res = await fetch(`${API_BASE_URL}/questions`, {
+      const res = await fetch(`${API_URL}/questions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question }),
