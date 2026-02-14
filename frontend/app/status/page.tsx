@@ -29,7 +29,7 @@ const containerVariants = {
 };
 
 const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 }
 };
 
@@ -62,41 +62,42 @@ export default function StatusPage() {
 
     const StatusIcon = ({ val, type }: { val?: string, type: 'backend' | 'database' | 'llm' }) => {
         const isHealthy = val?.toLowerCase() === "healthy";
-        const baseClass = "p-3 rounded-xl mb-4";
+        const baseClass = "p-3 rounded-xl mb-3";
         const Icon = type === 'backend' ? Server : type === 'database' ? Database : Brain;
 
         return (
             <div className={`${baseClass} ${isHealthy ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
-                <Icon size={24} />
+                <Icon size={20} />
             </div>
         );
     };
 
     return (
-        <motion.main
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-        >
+        <div className="container">
             <header>
-                <Link href="/" className="inline-flex items-center gap-2 text-indigo-400 font-medium mb-8 hover:text-indigo-300 transition-colors">
-                    ← Back to Workspace
-                </Link>
-                <motion.h1 variants={cardVariants}>System Health</motion.h1>
-                <motion.p variants={cardVariants}>
-                    Real-time status monitoring for our core knowledge services and AI engines.
-                </motion.p>
+                <div>
+                    <Link href="/" className="inline-flex items-center gap-2 text-indigo-400 font-medium mb-2 hover:text-indigo-300 transition-colors text-sm">
+                        ← Back to Workspace
+                    </Link>
+                    <motion.h1
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        style={{ textAlign: 'left' }}
+                    >
+                        System Health
+                    </motion.h1>
+                </div>
             </header>
 
-            <section>
-                <div className="flex justify-between items-center mb-8">
-                    <h2><Activity size={20} /> Service Overview</h2>
+            <section style={{ flex: 1, minHeight: 0 }}>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="m-0"><Activity size={18} /> Service Overview</h2>
                     <button
                         onClick={fetchStatus}
                         disabled={loading}
-                        className="text-sm py-2 px-4"
+                        className="text-xs py-1.5 px-3"
                     >
-                        <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+                        <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
                         Refresh
                     </button>
                 </div>
@@ -107,9 +108,9 @@ export default function StatusPage() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0 }}
-                            className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl flex items-center gap-3 mb-8"
+                            className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl flex items-center gap-3 mb-6 text-sm"
                         >
-                            <AlertTriangle size={20} />
+                            <AlertTriangle size={16} />
                             <span>{error}</span>
                         </motion.div>
                     )}
@@ -120,27 +121,27 @@ export default function StatusPage() {
                         <motion.div
                             key={service}
                             variants={cardVariants}
+                            initial="hidden"
+                            animate="visible"
                             className="status-card border border-white/5 hover:border-white/10 transition-colors"
                         >
-                            <div className="flex flex-col items-center">
-                                <StatusIcon
-                                    val={status ? (status as any)[service] : undefined}
-                                    type={service as any}
-                                />
-                                <h3 className="capitalize text-lg font-bold mb-2">{service === 'llm' ? 'LLM Engine' : service}</h3>
-                                <div className="flex items-center gap-2 font-medium">
-                                    {loading ? (
-                                        <span className="text-slate-500 text-sm">Checking...</span>
-                                    ) : (status as any)?.[service]?.toLowerCase() === "healthy" ? (
-                                        <span className="text-emerald-400 flex items-center gap-1 text-sm">
-                                            <ShieldCheck size={14} /> Operational
-                                        </span>
-                                    ) : (
-                                        <span className="text-red-400 flex items-center gap-1 text-sm">
-                                            <AlertTriangle size={14} /> Disconnected
-                                        </span>
-                                    )}
-                                </div>
+                            <StatusIcon
+                                val={status ? (status as any)[service] : undefined}
+                                type={service as any}
+                            />
+                            <h3 className="capitalize text-base font-bold mb-1">{service === 'llm' ? 'LLM Engine' : service}</h3>
+                            <div className="flex items-center gap-2 font-medium">
+                                {loading ? (
+                                    <span className="text-slate-500 text-[10px]">Checking...</span>
+                                ) : (status as any)?.[service]?.toLowerCase() === "healthy" ? (
+                                    <span className="text-emerald-400 flex items-center gap-1 text-[10px]">
+                                        <ShieldCheck size={12} /> Operational
+                                    </span>
+                                ) : (
+                                    <span className="text-red-400 flex items-center gap-1 text-[10px]">
+                                        <AlertTriangle size={12} /> Disconnected
+                                    </span>
+                                )}
                             </div>
                         </motion.div>
                     ))}
@@ -148,11 +149,12 @@ export default function StatusPage() {
             </section>
 
             <motion.div
-                variants={cardVariants}
-                className="text-center text-slate-500 text-sm mt-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-slate-500 text-xs mt-4 pb-4"
             >
                 Last updated: {new Date().toLocaleTimeString()}
             </motion.div>
-        </motion.main>
+        </div>
     );
 }
