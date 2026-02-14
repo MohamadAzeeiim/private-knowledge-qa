@@ -27,13 +27,13 @@ builder.Services.AddHealthChecks()
 // CORS (For frontend connection)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins(
-                            "http://localhost:3000", 
-                            "https://private-knowledge-qa-eight.vercel.app"
-                        )
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
@@ -69,7 +69,7 @@ if (!app.Environment.IsProduction())
 }
 
 
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
