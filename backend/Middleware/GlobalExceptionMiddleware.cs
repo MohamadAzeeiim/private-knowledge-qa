@@ -7,11 +7,13 @@ namespace PrivateKnowledgeQa.Api.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<GlobalExceptionMiddleware> _logger;
+        private readonly IWebHostEnvironment _env;
 
-        public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
+        public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger, IWebHostEnvironment env)
         {
             _next = next;
             _logger = logger;
+            _env = env;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -27,7 +29,7 @@ namespace PrivateKnowledgeQa.Api.Middleware
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -36,10 +38,10 @@ namespace PrivateKnowledgeQa.Api.Middleware
             {
                 StatusCode = context.Response.StatusCode,
                 Message = "Internal Server Error. Please try again later.",
-                Detailed = exception.Message // In production, hide this
+                Detailed = _env.IsDevelopment() ? exception.Message : null
             };
 
-            return context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
 }

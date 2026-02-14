@@ -122,7 +122,10 @@ export default function Home() {
   };
 
   const handleAsk = async () => {
-    if (!question.trim()) return;
+    if (!question.trim()) {
+      setMessage({ text: "Please enter a question.", type: 'error' });
+      return;
+    }
 
     setAsking(true);
     setQaResult(null);
@@ -184,7 +187,7 @@ export default function Home() {
             animate="visible"
           >
             <h2><Upload size={18} /> Add Knowledge</h2>
-            <div className={`p-3 bg-white/5 border border-white/10 rounded-xl transition-all ${message.type === 'error' ? 'border-red-500/30' : ''}`}>
+            <div className={`p-3 bg-white/5 border border-white/10 rounded-xl transition-all ${message.type === 'error' && !asking ? 'border-red-500/30' : ''}`}>
               <div className="flex items-center gap-3">
                 <input
                   type="file"
@@ -220,7 +223,7 @@ export default function Home() {
             </div>
 
             <AnimatePresence>
-              {message.text && (
+              {message.text && !asking && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -311,6 +314,18 @@ export default function Home() {
             </div>
 
             <AnimatePresence>
+              {message.text && asking && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className={`flex items-center gap-2 mb-4 text-xs font-medium text-red-400`}
+                >
+                  <AlertCircle size={14} />
+                  {message.text}
+                </motion.div>
+              )}
+
               {qaResult && (
                 <motion.div
                   className="answer-card"

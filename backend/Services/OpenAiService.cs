@@ -17,11 +17,13 @@ namespace PrivateKnowledgeQa.Api.Services
         private readonly IDocumentRepository _repository;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
+        private readonly ILogger<OpenAiService> _logger;
 
-        public OpenAiService(IDocumentRepository repository, IConfiguration configuration)
+        public OpenAiService(IDocumentRepository repository, IConfiguration configuration, ILogger<OpenAiService> logger)
         {
             _repository = repository;
             _configuration = configuration;
+            _logger = logger;
             _httpClient = new HttpClient();
         }
 
@@ -49,8 +51,16 @@ namespace PrivateKnowledgeQa.Api.Services
                 prompt.AppendLine(chunk.Text);
             }
 
-            var result = await CallLlmAsync(prompt.ToString());
-            return ParseResponse(result);
+            try
+            {
+                var result = await CallLlmAsync(prompt.ToString());
+                return ParseResponse(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "LLM Call Failed");
+                return new QuestionResponse("I'm sorry, I encountered an error while trying to reach the AI service. Please verify your API keys and connection.", "N/A", "N/A");
+            }
         }
 
         public async Task<bool> CheckHealthAsync()
@@ -67,8 +77,9 @@ namespace PrivateKnowledgeQa.Api.Services
                 var response = await client.GetAsync("https://openrouter.ai/api/v1/models");
                 return response.IsSuccessStatusCode;
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogWarning(ex, "OpenAI Health Check Failed");
                 return false;
             }
         }
@@ -110,7 +121,7 @@ namespace PrivateKnowledgeQa.Api.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"OpenRouter Error Response ({response.StatusCode}): {json}");
+                _logger.LogError("OpenRouter Error: {StatusCode} - {Response}", response.StatusCode, json);
                 response.EnsureSuccessStatusCode(); 
             }
 
