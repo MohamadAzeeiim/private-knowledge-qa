@@ -2,6 +2,8 @@ using System.Text;
 using System.Text.Json;
 using PrivateKnowledgeQa.Api.DTOs;
 using PrivateKnowledgeQa.Api.Repositories;
+using System.Net.Http.Headers;
+
 
 namespace PrivateKnowledgeQa.Api.Services
 {
@@ -93,7 +95,8 @@ namespace PrivateKnowledgeQa.Api.Services
             };
 
             using var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/chat/completions");
-            request.Headers.Add("Authorization", $"Bearer {apiKey}");
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
             
 
             request.Content = new StringContent(
