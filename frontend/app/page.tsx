@@ -47,6 +47,17 @@ export default function Home() {
     fetchDocuments();
   }, []);
 
+  // Success message timeout
+  useEffect(() => {
+    if (message.text && message.type === 'success') {
+      const timer = setTimeout(() => {
+        setMessage({ text: '', type: '' });
+        setSelectedFileName("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   const fetchDocuments = async () => {
     try {
       const res = await fetch(`${API_URL}/documents`);
@@ -101,6 +112,9 @@ export default function Home() {
       });
       if (res.ok) {
         fetchDocuments();
+        // Clear upload status on any deletion to keep UI fresh
+        setMessage({ text: '', type: '' });
+        setSelectedFileName("");
       }
     } catch (err) {
       console.error("Failed to delete document", err);
