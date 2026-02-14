@@ -24,8 +24,8 @@ body {
   color: var(--foreground);
   font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 /* Premium Mesh Background */
@@ -47,7 +47,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -225,7 +225,7 @@ textarea:focus {
   border-radius: 16px;
   padding: 1.25rem;
   overflow-y: auto;
-  max-height: 250px;
+  max-height: 350px;
 }
 
 .answer-header {
@@ -298,27 +298,10 @@ textarea:focus {
   grid-template-columns: 1fr 1.2fr;
   gap: 1.5rem;
   flex: 1;
-  min-height: 0;
-  /* Important for flex child scrolling */
 }
 
 .scroll-container {
-  overflow-y: auto;
-  max-height: 100%;
   padding-right: 0.5rem;
-}
-
-.scroll-container::-webkit-scrollbar {
-  width: 4px;
-}
-
-.scroll-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scroll-container::-webkit-scrollbar-thumb {
-  background: var(--card-border);
-  border-radius: 10px;
 }
 
 /* Status Fixes */
@@ -339,15 +322,5 @@ textarea:focus {
 @media (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
-    overflow-y: auto;
-  }
-
-  body {
-    overflow: auto;
-    height: auto;
-  }
-
-  .container {
-    height: auto;
   }
 }
