@@ -52,9 +52,25 @@ namespace PrivateKnowledgeQa.Api.Services
         }
 
         public async Task<bool> CheckHealthAsync()
-{
-    return true;
-}
+        {
+            try
+            {
+                var apiKey = _configuration["OpenAI:ApiKey"];
+                if (string.IsNullOrEmpty(apiKey))
+                    return false;
+
+                using var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+                var response = await client.GetAsync("https://openrouter.ai/api/v1/models");
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
 
         private async Task<string> CallLlmAsync(string prompt)
