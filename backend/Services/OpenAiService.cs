@@ -121,6 +121,14 @@ namespace PrivateKnowledgeQa.Api.Services
                       .GetProperty("message")
                       .GetProperty("content")
                       .GetString() ?? "";
+
+            Console.WriteLine("=== DEBUG START ===");
+            Console.WriteLine("API KEY LENGTH: " + (apiKey?.Length ?? 0));
+            Console.WriteLine("API KEY STARTS WITH: " + (apiKey?.Substring(0, Math.Min(10, apiKey.Length))));
+            Console.WriteLine("MODEL: " + model);
+            Console.WriteLine("BASE URL: " + baseUrl);
+            Console.WriteLine("=== DEBUG END ===");
+
         }
 
         private List<DocumentChunk> BuildChunks(List<Models.Document> documents)
