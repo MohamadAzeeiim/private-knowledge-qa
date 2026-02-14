@@ -1,19 +1,39 @@
-# Build folders
+# .NET Build Artifacts
 bin/
 obj/
+backend/bin/
+backend/obj/
 
-# Node
+# Node dependencies and build
 node_modules/
+frontend/node_modules/
 .next/
+frontend/.next/
 
-# Environment files
+# Environment files and Secrets
 .env
+.env.*
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+frontend/.env*
 appsettings.Development.json
-
-# OS files
-.DS_Store
-Thumbs.db
 
 # Logs
 *.log
+frontend/*.log
+backend/*.log
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+.vercel
+frontend/out/
+frontend/build/

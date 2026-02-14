@@ -1,39 +1,91 @@
 # Private Knowledge Q&A – Mini Workspace
 
-## Project Overview
-A full-stack web application that allows users to upload private text documents and ask questions based strictly on those documents.
+A secure, full-stack RAG (Retrieval-Augmented Generation) application designed for private document exploration. This project demonstrates a clean, layered architecture with a focus on security, performance, and developer experience.
 
-## Tech Stack
-- **Frontend**: Next.js 14+ (App Router), TypeScript, Vanilla CSS.
-- **Backend**: ASP.NET Core 8 Web API, Entity Framework Core.
-- **Database**: PostgreSQL (Render Free Tier).
-- **AI**: OpenRouter (LLM Multiplexer) for flexible model choice (e.g. Llama-3).
+## 🏗️ Architecture Overview
 
-## Setup Steps
+The system follows a decoupled Client-Server architecture with a clean separation of concerns.
 
-### Backend
-1. Navigate to `/backend`.
-2. Configure `OpenAI:ApiKey`, `OpenAI:BaseUrl`, and `OpenAI:Model` in `appsettings.json`.
-3. Update `ConnectionStrings:DefaultConnection` with your PostgreSQL connection string.
-4. Run migrations: `dotnet ef database update`.
-5. Start the API: `dotnet run`.
+```mermaid
+graph TD
+    User([User]) <--> Frontend[Next.js Frontend]
+    Frontend <--> Backend[ASP.NET Core Web API]
+    Backend <--> DB[(PostgreSQL Database)]
+    Backend <--> OpenRouter[OpenRouter AI Gateway]
+    
+    subgraph "Backend Layers"
+        API[API Controllers] --> Service[Business Logic Services]
+        Service --> Repo[Repository Pattern]
+        Repo --> EF[Entity Framework Core]
+    end
+```
 
-### Frontend
-1. Navigate to `/frontend`.
-2. Install dependencies: `npm install`.
-3. Start the dev server: `npm run dev`.
-4. Open [http://localhost:3000](http://localhost:3000).
+### Engineering Highlights
+- **Repository Pattern**: Abstracted data access for testability and flexibility.
+- **RAG Implementation**: Intelligent document chunking and context-aware prompting via LLM.
+- **Security-First Config**: 100% environment-based configuration; zero secrets committed.
+- **Centralized Error Handling**: Robust middleware for consistent API responses.
+- **Health Monitoring**: Dedicated status page monitoring service, database, and AI health.
 
-## Implemented Features
-- **Document Upload**: Multi-file .txt support with validation.
-- **Document List**: Metadata view with deletion capability.
-- **Strict Q&A**: Answers generated only from uploaded document context.
-- **Source Attributions**: Displays the source document and exact snippet used.
-- **Health Monitoring**: Real-time status of Backend, Database, and OpenAI connection.
-- **Clean Architecture**: Decoupled layers and repository pattern.
-- **Global Error Handling**: Consistent JSON error responses.
+## 🛠️ Tech Stack
 
-## Limitations
-- Only `.txt` files supported (current scope).
-- Large documents are chunked; context length is limited to GPT-4o-mini's window.
-- Basic heuristic parsing for source attribution (can be refined with structured outputs).
+- **Frontend**: Next.js 14+ (App Router), TypeScript, Framer Motion, Lucide Icons.
+- **Backend**: ASP.NET Core 8 Web API, C#.
+- **Database**: PostgreSQL (Entity Framework Core).
+- **AI/LLM**: OpenRouter (Multiplexer) for model flexibility (Llama-3, GPT-4o-mini).
+- **Hosting**: Vercel (Frontend), Render (Backend/PostgreSQL).
+
+## 🚀 Local Setup
+
+### 1. Prerequisites
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Node.js 18+](https://nodejs.org/)
+- [PostgreSQL](https://www.postgresql.org/download/)
+
+### 2. Environment Configuration
+Copy the template and fill in your credentials:
+```bash
+cp .env.example .env
+```
+Key requirements:
+- `OpenAI__ApiKey`: Your OpenRouter API key.
+- `ConnectionStrings__DefaultConnection`: Local or remote PostgreSQL string.
+
+### 3. Backend Setup
+```bash
+cd backend
+dotnet ef database update
+dotnet run
+```
+
+### 4. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## 🏥 Health Checks
+
+The application includes a built-in health monitoring system accessible via:
+- **API Endpoint**: `/api/status` (or standard ASP.NET `/health`)
+- **UI Dashboard**: `/status` page
+
+It monitors:
+- Database connectivity.
+- LLM API responsiveness.
+- Backend service uptime.
+
+## 🔒 Security & Best Practices
+
+- **Zero Hardcoding**: All sensitive values (keys, strings) are read from Environment Variables or User Secrets.
+- **Sanitized Repository**: A professional `.env.example` is provided; `.env` files are strictly gitored.
+- **CORS Policy**: Configured strictly to allow only authorized origins in production.
+
+## 🌐 Deployment Links
+
+- **Live Demo**: [Coming Soon](https://your-frontend.vercel.app)
+- **API Documentation**: [Coming Soon](https://your-backend.onrender.com/swagger)
+
+---
+*Created as part of a technical workspace demonstration.*
